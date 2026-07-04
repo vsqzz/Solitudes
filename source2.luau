@@ -363,6 +363,11 @@ function Solitude:AuthenticateKey(Key, Config)
 	Config = Config or {};
 	Solitude:ConfigureAuth(Config);
 
+	Key = tostring(Key or ""):match("^%s*(.-)%s*$");
+	if Key == "" then
+		return false, "Key missing";
+	end;
+
 	local Endpoint = Config.Endpoint or Solitude.Auth.Endpoint;
 	if not Endpoint then
 		return false, "Auth endpoint missing";
