@@ -202,7 +202,7 @@ Solitude.MainColor = Color3.fromRGB(8, 8, 13);
 Solitude.RegisiteryColor = {};
 Solitude.NameRegisitry = {};
 Solitude.IsMosueOverOtherFrame = false;
-Solitude.GlobalLogo = "rbxassetid://120358385035996";
+Solitude.GlobalLogo = "rbxassetid://97994273021300";
 Solitude.ImageColorMapping = "rbxassetid://4155801252";
 
 if getcustomasset then
