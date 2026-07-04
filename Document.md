@@ -4,7 +4,7 @@ The source code is ready for obfuscate using Luraph.
 
 ## Using Library
 ```lua
-local Solitude = loadstring(game:HttpGet("https://raw.githubusercontent.com/vsqzz/Solitudes/refs/heads/main/source.luau"))()
+local Solitude = loadstring(game:HttpGet("https://raw.githubusercontent.com/vsqzz/Solitudes/refs/heads/main/source2.luau"))()
 ```
 For Roblox Game
 ```lua
@@ -124,13 +124,38 @@ Make sure "Enable3DRenderer" is enabled
 Window:Set3DRender(<bool>)
 ```
 ## Set Profile
-Set user profile ex: username , profile , expires date
+Set user profile and rank
 ```lua
 Window:SetAccount({
   Profile = <string> or nil,
   Username = <string> or nil,
-  Expires = <string> or nil
+  Rank = "Freemium" or "Member" or "Buyer"
 })
+```
+## Auth And Key System
+Use a backend endpoint to validate keys and map Discord roles to ranks. Buyer is yellow and includes all features by default.
+```lua
+Solitude:ConfigureAuth({
+  Endpoint = "https://your-api.example.com/solitude/auth",
+  ScriptId = "universal-esp",
+  Roles = {
+    ["freemium"] = "Freemium",
+    ["member"] = "Member",
+    ["buyer"] = "Buyer"
+  }
+})
+
+Solitude:CreateKeySystem({
+  Endpoint = "https://your-api.example.com/solitude/auth",
+  ScriptId = "universal-esp",
+  OnGetKey = function()
+    setclipboard("https://discord.gg/your-server")
+  end
+})
+
+if Solitude:HasFeature("premium_aimbot") then
+  -- enable premium feature
+end
 ```
 ### Creating Tab Label
 ```lua

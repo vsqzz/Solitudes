@@ -204,6 +204,214 @@ Solitude.NameRegisitry = {};
 Solitude.IsMosueOverOtherFrame = false;
 Solitude.GlobalLogo = "rbxassetid://97994273021300";
 Solitude.ImageColorMapping = "rbxassetid://4155801252";
+Solitude.Ranks = {
+	Freemium = {
+		Name = "Freemium",
+		Level = 0,
+		Color = Color3.fromRGB(186, 186, 186),
+		Features = {}
+	},
+	Member = {
+		Name = "Member",
+		Level = 10,
+		Color = Color3.fromRGB(255, 255, 255),
+		Features = {}
+	},
+	Buyer = {
+		Name = "Buyer",
+		Level = 100,
+		Color = Color3.fromRGB(255, 204, 64),
+		Features = {"*"}
+	}
+};
+
+Solitude.Auth = {
+	Endpoint = nil,
+	DiscordId = nil,
+	ScriptId = nil,
+	Key = nil,
+	Features = {},
+	Rank = Solitude.Ranks.Freemium
+};
+
+Solitude.RankChanged = Instance.new("BindableEvent");
+
+Solitude.ResolveRank = LPH_NO_VIRTUALIZE(function(self, Rank)
+	if typeof(Rank) == "string" then
+		for _, Preset in next, Solitude.Ranks do
+			if string.lower(Preset.Name) == string.lower(Rank) then
+				return Preset;
+			end;
+		end;
+
+		return {
+			Name = Rank,
+			Level = 0,
+			Color = Color3.fromRGB(186, 186, 186),
+			Features = {}
+		};
+	end;
+
+	Rank = Rank or Solitude.Ranks.Freemium;
+
+	local Name = Rank.Name or Rank.name or Rank.Role or Rank.role or "Freemium";
+	local Preset = Solitude:ResolveRank(Name);
+	local Color = Rank.Color or Rank.color or Preset.Color;
+
+	if typeof(Color) == "table" then
+		Color = Color3.fromRGB(Color[1] or Color.R or Color.r or 186, Color[2] or Color.G or Color.g or 186, Color[3] or Color.B or Color.b or 186);
+	end;
+
+	return {
+		Name = Name,
+		Level = Rank.Level or Rank.level or Preset.Level or 0,
+		Color = Color,
+		Features = Rank.Features or Rank.features or Preset.Features or {}
+	};
+end);
+
+function Solitude:SetRank(Rank)
+	Solitude.Auth.Rank = Solitude:ResolveRank(Rank);
+	Solitude.RankChanged:Fire(Solitude.Auth.Rank);
+	return Solitude.Auth.Rank;
+end;
+
+function Solitude:GetRank()
+	return Solitude.Auth.Rank or Solitude.Ranks.Freemium;
+end;
+
+function Solitude:GetRankName()
+	return Solitude:GetRank().Name;
+end;
+
+function Solitude:_HasFeatureInList(List, Feature)
+	if not Feature or Feature == "" then
+		return true;
+	end;
+
+	for Key, Value in next, List or {} do
+		if Value == "*" or Key == "*" then
+			return true;
+		end;
+
+		if Value == Feature or Key == Feature then
+			return Value ~= false;
+		end;
+	end;
+
+	return false;
+end;
+
+function Solitude:HasFeature(Feature)
+	local Rank = Solitude:GetRank();
+
+	return Solitude:_HasFeatureInList(Solitude.Auth.Features, Feature) or Solitude:_HasFeatureInList(Rank.Features, Feature);
+end;
+
+function Solitude:RequireFeature(Feature, DeniedCallback)
+	local Allowed = Solitude:HasFeature(Feature);
+
+	if not Allowed and DeniedCallback then
+		DeniedCallback(Solitude:GetRank(), Feature);
+	end;
+
+	return Allowed;
+end;
+
+function Solitude:ConfigureAuth(Config)
+	Config = Config or {};
+
+	Solitude.Auth.Endpoint = Config.Endpoint or Config.Url or Solitude.Auth.Endpoint;
+	Solitude.Auth.DiscordId = Config.DiscordId or Solitude.Auth.DiscordId;
+	Solitude.Auth.ScriptId = Config.ScriptId or Solitude.Auth.ScriptId;
+	Solitude.Auth.Roles = Config.Roles or Solitude.Auth.Roles;
+
+	if Config.Rank then
+		Solitude:SetRank(Config.Rank);
+	end;
+
+	return Solitude.Auth;
+end;
+
+function Solitude:ApplyAuthPayload(Payload)
+	Payload = Payload or {};
+
+	Solitude.Auth.Key = Payload.Key or Payload.key or Solitude.Auth.Key;
+	Solitude.Auth.Features = Payload.Features or Payload.features or Solitude.Auth.Features or {};
+
+	local Rank = Payload.Rank or Payload.rank or Payload.Role or Payload.role;
+	local Roles = Payload.Roles or Payload.roles;
+
+	if not Rank and Roles and Solitude.Auth.Roles then
+		for _, Role in next, Roles do
+			Rank = Solitude.Auth.Roles[Role] or Solitude.Auth.Roles[tostring(Role)];
+
+			if Rank then
+				break;
+			end;
+		end;
+	end;
+
+	if Rank then
+		Solitude:SetRank(Rank);
+	end;
+
+	return Solitude.Auth;
+end;
+
+function Solitude:AuthenticateKey(Key, Config)
+	Config = Config or {};
+	Solitude:ConfigureAuth(Config);
+
+	local Endpoint = Config.Endpoint or Solitude.Auth.Endpoint;
+	if not Endpoint then
+		return false, "Auth endpoint missing";
+	end;
+
+	local Request = (syn and syn.request) or http_request or request;
+	if not Request then
+		return false, "HTTP request unsupported";
+	end;
+
+	local Body = HttpService:JSONEncode({
+		key = Key,
+		discordId = Config.DiscordId or Solitude.Auth.DiscordId,
+		scriptId = Config.ScriptId or Solitude.Auth.ScriptId,
+		robloxUserId = LocalPlayer.UserId,
+		robloxUsername = LocalPlayer.Name
+	});
+
+	local Success, Response = pcall(Request, {
+		Url = Endpoint,
+		Method = "POST",
+		Headers = {
+			["Content-Type"] = "application/json"
+		},
+		Body = Body
+	});
+
+	if not Success then
+		return false, tostring(Response);
+	end;
+
+	local ResponseBody = Response.Body or Response.body or "{}";
+	local ParsedSuccess, Payload = pcall(function()
+		return HttpService:JSONDecode(ResponseBody);
+	end);
+
+	if not ParsedSuccess then
+		return false, "Invalid auth response";
+	end;
+
+	if Payload.success == false or Payload.valid == false then
+		return false, Payload.message or Payload.error or "Invalid key";
+	end;
+
+	Solitude.Auth.Key = Key;
+	Solitude:ApplyAuthPayload(Payload);
+
+	return true, Payload;
+end;
 
 if getcustomasset then
 	local link = "https://github.com/vsqzz/Solitudes/blob/main/assets/%s?raw=true";
@@ -3688,7 +3896,7 @@ function Solitude:RegisiterItem(Frame: Frame , Signel)
 		return Button;
 	end;
 
-	function idx:AddUserFrame(Name : string , Profile: string , Expires : string)
+	function idx:AddUserFrame(Name : string , Profile: string , Rank : any)
 		local UserFrame = Instance.new("Frame")
 		local UserLabel = Instance.new("TextLabel")
 		local LineFrame = Instance.new("Frame")
@@ -3760,8 +3968,9 @@ function Solitude:RegisiterItem(Frame: Frame , Signel)
 		UserStatusLabel.Size = UDim2.new(1, -35, 0, 15)
 		UserStatusLabel.ZIndex = LayerIndex + 9
 		UserStatusLabel.Font = Enum.Font.GothamMedium
-		UserStatusLabel.Text = Expires or 'Never'
-		UserStatusLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+		local RankInfo = Solitude:ResolveRank(Rank);
+		UserStatusLabel.Text = RankInfo.Name
+		UserStatusLabel.TextColor3 = RankInfo.Color
 		UserStatusLabel.TextSize = 13.000
 		UserStatusLabel.TextTransparency = 0.200
 		UserStatusLabel.TextXAlignment = Enum.TextXAlignment.Left
@@ -3815,8 +4024,14 @@ function Solitude:RegisiterItem(Frame: Frame , Signel)
 			LogoImage.Image = Profile or "rbxasset://textures/ui/clb_robux_20@3x.png";
 		end;
 
+		function UserFrameItem:SetRank(Rank)
+			local RankInfo = Solitude:ResolveRank(Rank);
+			UserStatusLabel.Text = RankInfo.Name;
+			UserStatusLabel.TextColor3 = RankInfo.Color;
+		end;
+
 		function UserFrameItem:SetExpires(Exp)
-			UserStatusLabel.Text = Exp or 'Never';
+			UserFrameItem:SetRank(Exp);
 		end;
 
 		return UserFrameItem;
@@ -3833,7 +4048,9 @@ function Solitude:CreateWindow(Config)
 		Size = UDim2.new(0, 640, 0, 480),
 		ConfigFolder = "SolitudeConfigs",
 		Enable3DRenderer = false,
-		Keybind = "Insert"
+		Keybind = "Insert",
+		Rank = Solitude:GetRank(),
+		Auth = nil
 	});
 
 	local Window = {
@@ -3846,10 +4063,15 @@ function Solitude:CreateWindow(Config)
 		Tabs = {},
 		CurrentTab = 1,
 		Keybind = Config.Keybind,
-		Enable3DRenderer = Config.Enable3DRenderer
+		Enable3DRenderer = Config.Enable3DRenderer,
+		Rank = Solitude:ResolveRank(Config.Rank)
 	};
 
 	Solitude.GlobalLogo = Window.Logo;
+
+	if Config.Auth then
+		Solitude:ConfigureAuth(Config.Auth);
+	end;
 
 	local Logging = Solitude:CreateLogger();
 	if not isfolder(Window.ConfigFolder) then
@@ -4295,8 +4517,8 @@ function Solitude:CreateWindow(Config)
 	ExpireLabel.Size = UDim2.new(0, 200, 0, 15)
 	ExpireLabel.ZIndex = 7
 	ExpireLabel.Font = Enum.Font.GothamBold
-	ExpireLabel.Text = "never"
-	ExpireLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	ExpireLabel.Text = Window.Rank.Name
+	ExpireLabel.TextColor3 = Window.Rank.Color
 	ExpireLabel.TextSize = 10.000
 	ExpireLabel.TextTransparency = 0.650
 	ExpireLabel.TextXAlignment = Enum.TextXAlignment.Left
@@ -5856,23 +6078,28 @@ function Solitude:CreateWindow(Config)
 		Config = Solitude:ProcessParams(Config , {
 			Profile = Solitude.UserProfile,
 			Username = LocalPlayer.DisplayName,
-			Expires = "Never",
+			Rank = Solitude:GetRank(),
+			Expires = nil,
 		});
+
+		local Rank = Solitude:ResolveRank(Config.Rank or Config.Expires or Solitude:GetRank());
 
 		AccountName.Text = Config.Username;
 		AccountProfile.Image = Config.Profile;
-		ExpireLabel.Text = Config.Expires;
+		ExpireLabel.Text = Rank.Name;
+		ExpireLabel.TextColor3 = Rank.Color;
 
 		Window.Username = Config.Username or Window.Username;
 		Window.Profile = Config.Profile or Window.Profile;
-		Window.Expires = Config.Expires or Window.Expires;
+		Window.Rank = Rank;
+		Window.Expires = Rank.Name;
 
 		if Window.UserSettings.UserFrame then
 			Window.UserSettings.UserFrame:SetUsername(Window.Username);
 			Window.UserSettings.UserFrame:SetProfile(Window.Profile);
-			Window.UserSettings.UserFrame:SetExpires(Window.Expires);
+			Window.UserSettings.UserFrame:SetRank(Window.Rank);
 		else
-			Window.UserSettings.UserFrame = UserSettings:AddUserFrame(Window.Username , Window.Profile , Window.Expires);
+			Window.UserSettings.UserFrame = UserSettings:AddUserFrame(Window.Username , Window.Profile , Window.Rank);
 		end;
 	end;
 
@@ -5885,6 +6112,14 @@ function Solitude:CreateWindow(Config)
 			})
 		end
 	end;
+
+	Solitude.RankChanged.Event:Connect(function(Rank)
+		Window:SetAccount({
+			Username = Window.Username,
+			Profile = Window.Profile,
+			Rank = Rank
+		});
+	end);
 
 	Window:SetAccount();
 
@@ -6666,6 +6901,209 @@ function Solitude:CreateIndicator()
 	return Indicators;
 end;
 
+function Solitude:CreateKeySystem(Config)
+	Config = Solitude:ProcessParams(Config , {
+		Name = "Solitude",
+		Content = "Enter your product key",
+		Default = "",
+		Endpoint = Solitude.Auth.Endpoint,
+		DiscordId = Solitude.Auth.DiscordId,
+		ScriptId = Solitude.Auth.ScriptId,
+		OnGetKey = function() end,
+		OnAuthenticated = function() end,
+		OnFailed = function() end,
+		Yield = false
+	});
+
+	local KeyLib = {};
+	local Frame = Instance.new("Frame")
+	local UICorner = Instance.new("UICorner")
+	local UIStroke = Instance.new("UIStroke")
+	local Title = Instance.new("TextLabel")
+	local Subtitle = Instance.new("TextLabel")
+	local InputFrame = Instance.new("Frame")
+	local InputCorner = Instance.new("UICorner")
+	local InputStroke = Instance.new("UIStroke")
+	local TextBox = Instance.new("TextBox")
+	local GetKey = Instance.new("Frame")
+	local GetKeyCorner = Instance.new("UICorner")
+	local GetKeyStroke = Instance.new("UIStroke")
+	local GetKeyLabel = Instance.new("TextLabel")
+	local Login = Instance.new("Frame")
+	local LoginCorner = Instance.new("UICorner")
+	local LoginStroke = Instance.new("UIStroke")
+	local LoginLabel = Instance.new("TextLabel")
+	local Status = Instance.new("TextLabel")
+	local Shadow = Solitude:CreateShadow(Frame, true);
+
+	KeyLib.YieldEvent = Instance.new("BindableEvent", Frame);
+
+	Frame.Name = "KEYSYSTEM="..Solitude.RandomString();
+	Frame.Parent = Solitude.ScreenGui;
+	Frame.AnchorPoint = Vector2.new(0.5, 0.5);
+	Frame.BackgroundColor3 = Color3.fromRGB(8, 8, 13);
+	Frame.BackgroundTransparency = 0.055;
+	Frame.BorderColor3 = Color3.fromRGB(0, 0, 0);
+	Frame.BorderSizePixel = 0;
+	Frame.ClipsDescendants = true;
+	Frame.Position = UDim2.new(0.5, 0, 0.5, 0);
+	Frame.Size = UDim2.new(0, 360, 0, 185);
+	Frame.ZIndex = 200;
+
+	UICorner.Parent = Frame;
+	UIStroke.Transparency = 0.650;
+	UIStroke.Color = Color3.fromRGB(45, 48, 58);
+	UIStroke.Parent = Frame;
+
+	Title.Parent = Frame;
+	Title.BackgroundTransparency = 1;
+	Title.Position = UDim2.new(0, 18, 0, 12);
+	Title.Size = UDim2.new(1, -36, 0, 25);
+	Title.ZIndex = 205;
+	Title.Font = Enum.Font.GothamBold;
+	Title.Text = Config.Name;
+	Title.TextColor3 = Color3.fromRGB(255, 255, 255);
+	Title.TextSize = 21;
+	Title.TextXAlignment = Enum.TextXAlignment.Left;
+
+	Subtitle.Parent = Frame;
+	Subtitle.BackgroundTransparency = 1;
+	Subtitle.Position = UDim2.new(0, 18, 0, 36);
+	Subtitle.Size = UDim2.new(1, -36, 0, 18);
+	Subtitle.ZIndex = 205;
+	Subtitle.Font = Enum.Font.GothamBold;
+	Subtitle.Text = Config.Content;
+	Subtitle.TextColor3 = Color3.fromRGB(255, 255, 255);
+	Subtitle.TextSize = 10;
+	Subtitle.TextTransparency = 0.650;
+	Subtitle.TextXAlignment = Enum.TextXAlignment.Left;
+
+	InputFrame.Parent = Frame;
+	InputFrame.AnchorPoint = Vector2.new(0.5, 0);
+	InputFrame.BackgroundColor3 = Color3.fromRGB(20, 22, 27);
+	InputFrame.BorderSizePixel = 0;
+	InputFrame.Position = UDim2.new(0.5, 0, 0, 70);
+	InputFrame.Size = UDim2.new(1, -36, 0, 36);
+	InputFrame.ZIndex = 205;
+	InputCorner.Parent = InputFrame;
+	InputStroke.Transparency = 0.650;
+	InputStroke.Color = Color3.fromRGB(45, 48, 58);
+	InputStroke.Parent = InputFrame;
+
+	TextBox.Parent = InputFrame;
+	TextBox.AnchorPoint = Vector2.new(0.5, 0.5);
+	TextBox.BackgroundTransparency = 1;
+	TextBox.Position = UDim2.new(0.5, 0, 0.5, 0);
+	TextBox.Size = UDim2.new(1, -20, 1, -4);
+	TextBox.ZIndex = 210;
+	TextBox.ClearTextOnFocus = false;
+	TextBox.Font = Enum.Font.GothamMedium;
+	TextBox.PlaceholderText = "Product Key";
+	TextBox.Text = Config.Default;
+	TextBox.TextColor3 = Color3.fromRGB(255, 255, 255);
+	TextBox.TextSize = 12;
+	TextBox.TextTransparency = 0.250;
+	TextBox.TextXAlignment = Enum.TextXAlignment.Left;
+
+	GetKey.Parent = Frame;
+	GetKey.AnchorPoint = Vector2.new(0, 1);
+	GetKey.BackgroundColor3 = Color3.fromRGB(20, 22, 27);
+	GetKey.BorderSizePixel = 0;
+	GetKey.Position = UDim2.new(0, 18, 1, -18);
+	GetKey.Size = UDim2.new(0.5, -24, 0, 36);
+	GetKey.ZIndex = 205;
+	GetKeyCorner.Parent = GetKey;
+	GetKeyStroke.Transparency = 0.650;
+	GetKeyStroke.Color = Color3.fromRGB(45, 48, 58);
+	GetKeyStroke.Parent = GetKey;
+
+	GetKeyLabel.Parent = GetKey;
+	GetKeyLabel.BackgroundTransparency = 1;
+	GetKeyLabel.Size = UDim2.new(1, 0, 1, 0);
+	GetKeyLabel.ZIndex = 210;
+	GetKeyLabel.Font = Enum.Font.GothamBold;
+	GetKeyLabel.Text = "Get Key";
+	GetKeyLabel.TextColor3 = Color3.fromRGB(186, 186, 186);
+	GetKeyLabel.TextSize = 15;
+
+	Login.Parent = Frame;
+	Login.AnchorPoint = Vector2.new(1, 1);
+	Login.BackgroundColor3 = Color3.fromRGB(20, 22, 27);
+	Login.BorderSizePixel = 0;
+	Login.Position = UDim2.new(1, -18, 1, -18);
+	Login.Size = UDim2.new(0.5, -24, 0, 36);
+	Login.ZIndex = 205;
+	LoginCorner.Parent = Login;
+	LoginStroke.Transparency = 0.650;
+	LoginStroke.Color = Color3.fromRGB(45, 48, 58);
+	LoginStroke.Parent = Login;
+
+	LoginLabel.Parent = Login;
+	LoginLabel.BackgroundTransparency = 1;
+	LoginLabel.Size = UDim2.new(1, 0, 1, 0);
+	LoginLabel.ZIndex = 210;
+	LoginLabel.Font = Enum.Font.GothamBold;
+	LoginLabel.Text = "Login";
+	LoginLabel.TextColor3 = Solitude.AccentColor;
+	LoginLabel.TextSize = 15;
+
+	Status.Parent = Frame;
+	Status.BackgroundTransparency = 1;
+	Status.Position = UDim2.new(0, 18, 0, 112);
+	Status.Size = UDim2.new(1, -36, 0, 18);
+	Status.ZIndex = 205;
+	Status.Font = Enum.Font.GothamMedium;
+	Status.Text = "Rank: "..Solitude:GetRankName();
+	Status.TextColor3 = Solitude:GetRank().Color;
+	Status.TextSize = 12;
+	Status.TextTransparency = 0.150;
+	Status.TextXAlignment = Enum.TextXAlignment.Left;
+
+	Solitude.RankChanged.Event:Connect(function(Rank)
+		Status.Text = "Rank: "..Rank.Name;
+		Status.TextColor3 = Rank.Color;
+	end);
+
+	Solitude:CreateInput(GetKey, function()
+		return Config.OnGetKey();
+	end);
+
+	Solitude:CreateInput(Login, function()
+		Status.Text = "Checking key...";
+		Status.TextColor3 = Color3.fromRGB(186, 186, 186);
+
+		local Success, Result = Solitude:AuthenticateKey(TextBox.Text, Config);
+
+		if Success then
+			local Rank = Solitude:GetRank();
+			Status.Text = "Rank: "..Rank.Name;
+			Status.TextColor3 = Rank.Color;
+			Config.OnAuthenticated(Result, KeyLib);
+			KeyLib.YieldEvent:Fire(Result);
+		else
+			Status.Text = tostring(Result or "Invalid key");
+			Status.TextColor3 = Color3.fromRGB(255, 102, 105);
+			Config.OnFailed(Result, KeyLib);
+		end;
+	end);
+
+	function KeyLib:Await()
+		return KeyLib.YieldEvent.Event:Wait();
+	end;
+
+	function KeyLib:Unload()
+		Shadow:Render(false);
+		Frame:Destroy();
+	end;
+
+	Shadow:Render(true);
+
+	if Config.Yield then
+		KeyLib:Await();
+	end;
+
+	return KeyLib;
+end;
 function Solitude:Unload()
 	if not Solitude.UnloadEnabled then
 		return;	

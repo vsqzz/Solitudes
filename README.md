@@ -17,7 +17,7 @@ done
 ```lua
 -- U CAN USE TS IN UR ROBLOX GAME --
 
-local Solitude = loadstring(game:HttpGet("https://raw.githubusercontent.com/vsqzz/Solitudes/refs/heads/main/source.luau"))() --require(script:WaitForChild('ModuleScript'));
+local Solitude = loadstring(game:HttpGet("https://raw.githubusercontent.com/vsqzz/Solitudes/refs/heads/main/source2.luau"))() --require(script:WaitForChild('ModuleScript'));
 
 local Notification = Solitude:CreateNotification();
 local Logging = Solitude:CreateLogger();
@@ -31,7 +31,23 @@ local window = Solitude:CreateWindow({
 	Enable3DRenderer = false,
 	Keybind = "Insert"
 });
+Solitude:ConfigureAuth({
+	Endpoint = "https://your-api.example.com/solitude/auth",
+	ScriptId = "universal-esp",
+	Roles = {
+		["freemium"] = "Freemium",
+		["member"] = "Member",
+		["buyer"] = "Buyer"
+	}
+})
 
+Solitude:CreateKeySystem({
+	Endpoint = "https://your-api.example.com/solitude/auth",
+	ScriptId = "universal-esp",
+	OnGetKey = function()
+		setclipboard("https://discord.gg/your-server")
+	end
+})
 local Watermark = window:Watermark();
 
 local HC = Indicator.new({
