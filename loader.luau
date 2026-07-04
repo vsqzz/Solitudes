@@ -3,11 +3,11 @@ do
 	getfenv()[Constant] = getfenv()[Constant] or function(f) return f end;
 end;
 
-local NeverLose = {};
+local Solitude = {};
 
-NeverLose.BuiltInRegular = Font.new('rbxasset://LuaPackages/Packages/_Index/BuilderIcons/BuilderIcons/BuilderIcons.json',Enum.FontWeight.Regular,Enum.FontStyle.Normal);
-NeverLose.BuiltInBold = Font.new('rbxasset://LuaPackages/Packages/_Index/BuilderIcons/BuilderIcons/BuilderIcons.json',Enum.FontWeight.Bold,Enum.FontStyle.Normal);
-NeverLose.GlobalSignals = {};
+Solitude.BuiltInRegular = Font.new('rbxasset://LuaPackages/Packages/_Index/BuilderIcons/BuilderIcons/BuilderIcons.json',Enum.FontWeight.Regular,Enum.FontStyle.Normal);
+Solitude.BuiltInBold = Font.new('rbxasset://LuaPackages/Packages/_Index/BuilderIcons/BuilderIcons/BuilderIcons.json',Enum.FontWeight.Bold,Enum.FontStyle.Normal);
+Solitude.GlobalSignals = {};
 
 local cloneref: cloneref = cloneref or function(f) return f end;
 local TweenService: TweenService = cloneref(game:GetService('TweenService'));
@@ -28,33 +28,33 @@ local FastTween = TweenInfo.new(0.05);
 local VSlowTween = TweenInfo.new(0.5,Enum.EasingStyle.Quint);
 local Encryption = {};
 
-NeverLose.RandomString = LPH_NO_VIRTUALIZE(function()
+Solitude.RandomString = LPH_NO_VIRTUALIZE(function()
 	return string.rep(string.char(math.random(1,7)),math.random(1,4))..string.rep(string.char(math.random(1,7)),math.random(1,4))..string.rep(string.char(math.random(1,7)),math.random(1,4))..string.rep(string.char(math.random(1,7)),math.random(1,4))..string.rep(string.char(math.random(1,7)),math.random(1,4))..string.rep(string.char(math.random(1,7)),math.random(1,4))..string.rep(string.char(math.random(1,7)),math.random(1,4))..string.rep(string.char(math.random(1,7)),math.random(1,4))..string.rep(string.char(math.random(1,7)),math.random(1,4))..string.rep(string.char(math.random(1,7)),math.random(1,4))..string.rep(string.char(math.random(1,7)),math.random(1,4));
 end);
 
 ProtectGui(GlobalWindow);
 
-GlobalWindow.Name = NeverLose.RandomString();
+GlobalWindow.Name = Solitude.RandomString();
 GlobalWindow.IgnoreGuiInset = true;
 GlobalWindow.ZIndexBehavior = Enum.ZIndexBehavior.Global;
 GlobalWindow.ResetOnSpawn = false;
 GlobalWindow.Parent = CoreGui;
-NeverLose.ScreenGui = GlobalWindow;
-NeverLose.AccentColor = Color3.fromRGB(78, 127, 252);
-NeverLose.RegisiteryColor = {};
+Solitude.ScreenGui = GlobalWindow;
+Solitude.AccentColor = Color3.fromRGB(86, 38, 122);
+Solitude.RegisiteryColor = {};
 
-function NeverLose:AddSignal(RBXSignal)
-	if NeverLose.UnloadEnabled then
-		table.insert(NeverLose.GlobalSignals,RBXSignal);	
+function Solitude:AddSignal(RBXSignal)
+	if Solitude.UnloadEnabled then
+		table.insert(Solitude.GlobalSignals,RBXSignal);	
 	end;
 
 	return RBXSignal;
 end;
 
-NeverLose.IsStudio = RunService:IsStudio();
-NeverLose.IsMobile = UserInputService.TouchEnabled;
+Solitude.IsStudio = RunService:IsStudio();
+Solitude.IsMobile = UserInputService.TouchEnabled;
 
-NeverLose.CreateInput = LPH_NO_VIRTUALIZE(function(self , Frame , Callback)
+Solitude.CreateInput = LPH_NO_VIRTUALIZE(function(self , Frame , Callback)
 	local Button = Instance.new('ImageButton',Frame);
 
 	Button.ZIndex = Frame.ZIndex + 10;
@@ -72,7 +72,7 @@ NeverLose.CreateInput = LPH_NO_VIRTUALIZE(function(self , Frame , Callback)
 	return Button;
 end);
 
-NeverLose.PlayAnimate = LPH_NO_VIRTUALIZE(function(Self , Info , Property)
+Solitude.PlayAnimate = LPH_NO_VIRTUALIZE(function(Self , Info , Property)
 	local Tween = TweenService:Create(Self , Info or TweenInfo.new(0.25) , Property);
 
 	Tween:Play();
@@ -80,7 +80,7 @@ NeverLose.PlayAnimate = LPH_NO_VIRTUALIZE(function(Self , Info , Property)
 	return Tween;
 end);
 
-function NeverLose:RollingEffect(parent)
+function Solitude:RollingEffect(parent)
 	local UIGradient = Instance.new("UIGradient")
 
 	UIGradient.Transparency = NumberSequence.new{NumberSequenceKeypoint.new(0.00, 0.5), NumberSequenceKeypoint.new(1.00, 0.00)}
@@ -89,7 +89,7 @@ function NeverLose:RollingEffect(parent)
 	return UIGradient;
 end;
 
-function NeverLose:MarkLoad(LoaderFrame)
+function Solitude:MarkLoad(LoaderFrame)
 	local LoadingFrame = Instance.new("Frame")
 	local UICorner = Instance.new("UICorner")
 	local UIStroke = Instance.new("UIStroke")
@@ -98,7 +98,7 @@ function NeverLose:MarkLoad(LoaderFrame)
 	local UIStroke_2 = Instance.new("UIStroke")
 	local Icon = Instance.new("TextLabel")
 
-	LoadingFrame.Name = NeverLose.RandomString();
+	LoadingFrame.Name = Solitude.RandomString();
 	LoadingFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 	LoadingFrame.BackgroundColor3 = Color3.fromRGB(8, 8, 13)
 	LoadingFrame.BackgroundTransparency = 0.500
@@ -114,7 +114,7 @@ function NeverLose:MarkLoad(LoaderFrame)
 	UIStroke.Color = Color3.fromRGB(45, 48, 58)
 	UIStroke.Parent = LoadingFrame
 
-	IconFrame.Name = NeverLose.RandomString();
+	IconFrame.Name = Solitude.RandomString();
 	IconFrame.Parent = LoadingFrame
 	IconFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 	IconFrame.BackgroundColor3 = Color3.fromRGB(20, 22, 27)
@@ -132,7 +132,7 @@ function NeverLose:MarkLoad(LoaderFrame)
 	UIStroke_2.Color = Color3.fromRGB(45, 48, 58)
 	UIStroke_2.Parent = IconFrame
 
-	Icon.Name = NeverLose.RandomString();
+	Icon.Name = Solitude.RandomString();
 	Icon.Parent = IconFrame
 	Icon.AnchorPoint = Vector2.new(0.5, 0.5)
 	Icon.BackgroundColor3 = Color3.fromRGB(186, 186, 186)
@@ -142,9 +142,9 @@ function NeverLose:MarkLoad(LoaderFrame)
 	Icon.Position = UDim2.new(0.5, 0, 0.5, 0)
 	Icon.Size = UDim2.new(0.699999988, 0, 0.699999988, 0)
 	Icon.ZIndex = 102
-	Icon.FontFace = NeverLose.BuiltInBold
+	Icon.FontFace = Solitude.BuiltInBold
 	Icon.Text = "arrow-spin-clockwise"
-	Icon.TextColor3 = Color3.fromRGB(78, 127, 252)
+	Icon.TextColor3 = Color3.fromRGB(86, 38, 122)
 	Icon.TextSize = 30.000
 	Icon.TextTransparency = 0.250
 	Icon.TextWrapped = true
@@ -160,53 +160,53 @@ function NeverLose:MarkLoad(LoaderFrame)
 		if value then
 			LoadingFrame.Parent = LoaderFrame;
 
-			NeverLose.PlayAnimate(LoadingFrame,SlowyTween,{
+			Solitude.PlayAnimate(LoadingFrame,SlowyTween,{
 				BackgroundTransparency = 0.500
 			})	
 
-			NeverLose.PlayAnimate(UIStroke,SlowyTween,{
+			Solitude.PlayAnimate(UIStroke,SlowyTween,{
 				Transparency = 0.650
 			})	
 
-			NeverLose.PlayAnimate(IconFrame,SlowyTween,{
+			Solitude.PlayAnimate(IconFrame,SlowyTween,{
 				BackgroundTransparency = 0,
 				Size = UDim2.new(0.300000012, 0, 0.300000012, 0)
 			})	
 
-			NeverLose.PlayAnimate(UIStroke_2,SlowyTween,{
+			Solitude.PlayAnimate(UIStroke_2,SlowyTween,{
 				Transparency = 0.650
 			})	
 
-			NeverLose.PlayAnimate(Icon,SlowyTween,{
+			Solitude.PlayAnimate(Icon,SlowyTween,{
 				TextTransparency = 0.250
 			})	
 
 			lib.Thread = task.spawn(function()
 				while true do task.wait()
-					NeverLose.PlayAnimate(Icon,SlowyTween,{
+					Solitude.PlayAnimate(Icon,SlowyTween,{
 						Rotation = Icon.Rotation + 45
 					})
 				end;
 			end);
 		else
-			NeverLose.PlayAnimate(LoadingFrame,SlowyTween,{
+			Solitude.PlayAnimate(LoadingFrame,SlowyTween,{
 				BackgroundTransparency = 1
 			})	
 
-			NeverLose.PlayAnimate(UIStroke,SlowyTween,{
+			Solitude.PlayAnimate(UIStroke,SlowyTween,{
 				Transparency = 1
 			})	
 
-			NeverLose.PlayAnimate(IconFrame,SlowyTween,{
+			Solitude.PlayAnimate(IconFrame,SlowyTween,{
 				BackgroundTransparency = 1,
 				Size = UDim2.new(0.15, 0, 0.15, 0)
 			})	
 
-			NeverLose.PlayAnimate(UIStroke_2,SlowyTween,{
+			Solitude.PlayAnimate(UIStroke_2,SlowyTween,{
 				Transparency = 1
 			})	
 
-			NeverLose.PlayAnimate(Icon,SlowyTween,{
+			Solitude.PlayAnimate(Icon,SlowyTween,{
 				TextTransparency = 1
 			})	
 		end;
@@ -217,7 +217,7 @@ function NeverLose:MarkLoad(LoaderFrame)
 	return lib;
 end;
 
-function NeverLose:CreateShadow(parent , RollingEffect)
+function Solitude:CreateShadow(parent , RollingEffect)
 	local Shadow = {};
 
 	local UIShadowSafe85 = Instance.new("UIStroke")
@@ -245,10 +245,10 @@ function NeverLose:CreateShadow(parent , RollingEffect)
 	local r1,r2,r3,r4;
 
 	if RollingEffect then
-		r1 = NeverLose:RollingEffect(UIShadowSafe85);
-		r2 = NeverLose:RollingEffect(UIShadowSafe65);
-		r3 = NeverLose:RollingEffect(UIShadowSafe50);
-		r4 = NeverLose:RollingEffect(UIShadowSafe45);
+		r1 = Solitude:RollingEffect(UIShadowSafe85);
+		r2 = Solitude:RollingEffect(UIShadowSafe65);
+		r3 = Solitude:RollingEffect(UIShadowSafe50);
+		r4 = Solitude:RollingEffect(UIShadowSafe45);
 	end;
 
 	Shadow.Render = LPH_NO_VIRTUALIZE(function(self , value)
@@ -258,19 +258,19 @@ function NeverLose:CreateShadow(parent , RollingEffect)
 		end;
 
 		if value then
-			NeverLose.PlayAnimate(UIShadowSafe85 , SlowyTween , {
+			Solitude.PlayAnimate(UIShadowSafe85 , SlowyTween , {
 				Transparency = 0.900
 			})
 
-			NeverLose.PlayAnimate(UIShadowSafe65 , SlowyTween , {
+			Solitude.PlayAnimate(UIShadowSafe65 , SlowyTween , {
 				Transparency = 0.900
 			})
 
-			NeverLose.PlayAnimate(UIShadowSafe50 , SlowyTween , {
+			Solitude.PlayAnimate(UIShadowSafe50 , SlowyTween , {
 				Transparency = 0.900
 			})
 
-			NeverLose.PlayAnimate(UIShadowSafe45 , SlowyTween , {
+			Solitude.PlayAnimate(UIShadowSafe45 , SlowyTween , {
 				Transparency = 0.900
 			})
 
@@ -278,38 +278,38 @@ function NeverLose:CreateShadow(parent , RollingEffect)
 				RollingEffectThread = task.spawn(function()
 					local level = 20;
 					while true do task.wait(0.025)
-						NeverLose.PlayAnimate(r1 , SlowyTween , {
+						Solitude.PlayAnimate(r1 , SlowyTween , {
 							Rotation = r1.Rotation + level
 						});
 
-						NeverLose.PlayAnimate(r2 , SlowyTween , {
+						Solitude.PlayAnimate(r2 , SlowyTween , {
 							Rotation = r2.Rotation + level
 						});
 
-						NeverLose.PlayAnimate(r3 , SlowyTween , {
+						Solitude.PlayAnimate(r3 , SlowyTween , {
 							Rotation = r3.Rotation + level
 						});
 
-						NeverLose.PlayAnimate(r4 , SlowyTween , {
+						Solitude.PlayAnimate(r4 , SlowyTween , {
 							Rotation = r4.Rotation + level
 						});
 					end;
 				end);
 			end;
 		else
-			NeverLose.PlayAnimate(UIShadowSafe85 , SlowyTween , {
+			Solitude.PlayAnimate(UIShadowSafe85 , SlowyTween , {
 				Transparency = 1
 			})
 
-			NeverLose.PlayAnimate(UIShadowSafe65 , SlowyTween , {
+			Solitude.PlayAnimate(UIShadowSafe65 , SlowyTween , {
 				Transparency = 1
 			})
 
-			NeverLose.PlayAnimate(UIShadowSafe50 , SlowyTween , {
+			Solitude.PlayAnimate(UIShadowSafe50 , SlowyTween , {
 				Transparency = 1
 			})
 
-			NeverLose.PlayAnimate(UIShadowSafe45 , SlowyTween , {
+			Solitude.PlayAnimate(UIShadowSafe45 , SlowyTween , {
 				Transparency = 1
 			})
 		end;
@@ -318,7 +318,7 @@ function NeverLose:CreateShadow(parent , RollingEffect)
 	return Shadow;
 end;
 
-NeverLose.ProcessParams = LPH_NO_VIRTUALIZE(function(self , Params , Fixed)
+Solitude.ProcessParams = LPH_NO_VIRTUALIZE(function(self , Params , Fixed)
 	Params = Params or {};
 
 	local k = Params or {};
@@ -332,9 +332,9 @@ NeverLose.ProcessParams = LPH_NO_VIRTUALIZE(function(self , Params , Fixed)
 	return k;
 end);
 
-function NeverLose.new(Config)
-	Config = NeverLose:ProcessParams(Config , {
-		Name = "Neverlose",
+function Solitude.new(Config)
+	Config = Solitude:ProcessParams(Config , {
+		Name = "Solitude",
 		Content = "Available Products",
 		Process = "Script will automatically load.",
 		Default = "",
@@ -367,13 +367,13 @@ function NeverLose.new(Config)
 	local UIStroke_3 = Instance.new("UIStroke")
 	local Content_2 = Instance.new("TextLabel")
 	local Icon_2 = Instance.new("TextLabel")
-	local Shadow = NeverLose:CreateShadow(LoaderFrame,true);
+	local Shadow = Solitude:CreateShadow(LoaderFrame,true);
 
-	LoaderLib.MarkLoad = NeverLose:MarkLoad(LoaderFrame);
+	LoaderLib.MarkLoad = Solitude:MarkLoad(LoaderFrame);
 	LoaderLib.YieldEvent = Instance.new('BindableEvent',LoaderFrame);
 
-	LoaderFrame.Name = "LOADER="..NeverLose.RandomString();
-	LoaderFrame.Parent = NeverLose.ScreenGui
+	LoaderFrame.Name = "LOADER="..Solitude.RandomString();
+	LoaderFrame.Parent = Solitude.ScreenGui
 	LoaderFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 	LoaderFrame.BackgroundColor3 = Color3.fromRGB(8, 8, 13)
 	LoaderFrame.BackgroundTransparency = 0.055
@@ -385,7 +385,7 @@ function NeverLose.new(Config)
 
 	UICorner.Parent = LoaderFrame
 
-	WindowName.Name = NeverLose.RandomString();
+	WindowName.Name = Solitude.RandomString();
 	WindowName.Parent = LoaderFrame
 	WindowName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	WindowName.BackgroundTransparency = 1.000
@@ -400,7 +400,7 @@ function NeverLose.new(Config)
 	WindowName.TextSize = 21.000
 	WindowName.TextXAlignment = Enum.TextXAlignment.Left
 
-	WindowContent.Name = NeverLose.RandomString();
+	WindowContent.Name = Solitude.RandomString();
 	WindowContent.Parent = LoaderFrame
 	WindowContent.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	WindowContent.BackgroundTransparency = 1.000
@@ -434,7 +434,7 @@ function NeverLose.new(Config)
 	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	UIListLayout.Padding = UDim.new(0, 5)
 
-	SubSpace.Name = NeverLose.RandomString();
+	SubSpace.Name = Solitude.RandomString();
 	SubSpace.Parent = ScrollingFrame
 	SubSpace.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	SubSpace.BackgroundTransparency = 1.000
@@ -475,7 +475,7 @@ function NeverLose.new(Config)
 	TextBox.TextTransparency = 0.350
 	TextBox.TextXAlignment = Enum.TextXAlignment.Left
 
-	KeyFrame.Name = NeverLose.RandomString();
+	KeyFrame.Name = Solitude.RandomString();
 	KeyFrame.Parent = LoaderFrame
 	KeyFrame.AnchorPoint = Vector2.new(0.5, 1)
 	KeyFrame.BackgroundColor3 = Color3.fromRGB(20, 22, 27)
@@ -491,7 +491,7 @@ function NeverLose.new(Config)
 	UIStroke_2.Color = Color3.fromRGB(45, 48, 58)
 	UIStroke_2.Parent = KeyFrame
 
-	Content.Name = NeverLose.RandomString();
+	Content.Name = Solitude.RandomString();
 	Content.Parent = KeyFrame
 	Content.AnchorPoint = Vector2.new(0, 0.5)
 	Content.BackgroundColor3 = Color3.fromRGB(186, 186, 186)
@@ -508,7 +508,7 @@ function NeverLose.new(Config)
 	Content.TextTransparency = 0.200
 	Content.TextXAlignment = Enum.TextXAlignment.Left
 
-	Icon.Name = NeverLose.RandomString();
+	Icon.Name = Solitude.RandomString();
 	Icon.Parent = KeyFrame
 	Icon.AnchorPoint = Vector2.new(0, 0.5)
 	Icon.BackgroundColor3 = Color3.fromRGB(186, 186, 186)
@@ -518,9 +518,9 @@ function NeverLose.new(Config)
 	Icon.Position = UDim2.new(0, 10, 0.5, 0)
 	Icon.Size = UDim2.new(0, 20, 0, 20)
 	Icon.ZIndex = 17
-	Icon.FontFace = NeverLose.BuiltInBold
+	Icon.FontFace = Solitude.BuiltInBold
 	Icon.Text = "chain-link"
-	Icon.TextColor3 = Color3.fromRGB(78, 127, 252)
+	Icon.TextColor3 = Color3.fromRGB(86, 38, 122)
 	Icon.TextSize = 18.000
 	Icon.TextTransparency = 0.250
 	Icon.TextWrapped = true
@@ -541,7 +541,7 @@ function NeverLose.new(Config)
 	UIStroke_3.Color = Color3.fromRGB(45, 48, 58)
 	UIStroke_3.Parent = RedeemFrame
 
-	Content_2.Name = NeverLose.RandomString();
+	Content_2.Name = Solitude.RandomString();
 	Content_2.Parent = RedeemFrame
 	Content_2.AnchorPoint = Vector2.new(0, 0.5)
 	Content_2.BackgroundColor3 = Color3.fromRGB(186, 186, 186)
@@ -558,7 +558,7 @@ function NeverLose.new(Config)
 	Content_2.TextTransparency = 0.200
 	Content_2.TextXAlignment = Enum.TextXAlignment.Left
 
-	Icon_2.Name = NeverLose.RandomString();
+	Icon_2.Name = Solitude.RandomString();
 	Icon_2.Parent = RedeemFrame
 	Icon_2.AnchorPoint = Vector2.new(0, 0.5)
 	Icon_2.BackgroundColor3 = Color3.fromRGB(186, 186, 186)
@@ -568,9 +568,9 @@ function NeverLose.new(Config)
 	Icon_2.Position = UDim2.new(0, 10, 0.5, 0)
 	Icon_2.Size = UDim2.new(0, 20, 0, 20)
 	Icon_2.ZIndex = 17
-	Icon_2.FontFace = NeverLose.BuiltInBold
+	Icon_2.FontFace = Solitude.BuiltInBold
 	Icon_2.Text = "gift-card"
-	Icon_2.TextColor3 = Color3.fromRGB(78, 127, 252)
+	Icon_2.TextColor3 = Color3.fromRGB(86, 38, 122)
 	Icon_2.TextSize = 18.000
 	Icon_2.TextTransparency = 0.250
 	Icon_2.TextWrapped = true
@@ -589,7 +589,7 @@ function NeverLose.new(Config)
 		local VersionContent = Instance.new("TextLabel")
 		local VersionName = Instance.new("TextLabel")
 
-		VersionFrame.Name = NeverLose.RandomString();
+		VersionFrame.Name = Solitude.RandomString();
 		VersionFrame.Parent = ScrollingFrame
 		VersionFrame.BackgroundColor3 = Color3.fromRGB(20, 22, 27)
 		VersionFrame.BackgroundTransparency = 0.050
@@ -620,7 +620,7 @@ function NeverLose.new(Config)
 		VersionContent.TextTransparency = 0.650
 		VersionContent.TextXAlignment = Enum.TextXAlignment.Left
 
-		VersionName.Name = NeverLose.RandomString();
+		VersionName.Name = Solitude.RandomString();
 		VersionName.Parent = VersionFrame
 		VersionName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 		VersionName.BackgroundTransparency = 1.000
@@ -638,37 +638,37 @@ function NeverLose.new(Config)
 
 		VersionProcess.SetRender = LPH_NO_VIRTUALIZE(function(value)
 			if value then
-				NeverLose.PlayAnimate(VersionFrame,SlowyTween , {
+				Solitude.PlayAnimate(VersionFrame,SlowyTween , {
 					BackgroundTransparency = 0.050
 				})
 
-				NeverLose.PlayAnimate(UIStroke,SlowyTween , {
+				Solitude.PlayAnimate(UIStroke,SlowyTween , {
 					Transparency = 0.650
 				})
 
-				NeverLose.PlayAnimate(VersionContent,SlowyTween , {
+				Solitude.PlayAnimate(VersionContent,SlowyTween , {
 					TextTransparency = 0.650
 				})
 
-				NeverLose.PlayAnimate(VersionName,SlowyTween , {
+				Solitude.PlayAnimate(VersionName,SlowyTween , {
 					TextTransparency = 0.200
 				})
 
 				VersionProcess.Match();
 			else
-				NeverLose.PlayAnimate(VersionFrame,SlowyTween , {
+				Solitude.PlayAnimate(VersionFrame,SlowyTween , {
 					BackgroundTransparency = 1
 				})
 
-				NeverLose.PlayAnimate(UIStroke,SlowyTween , {
+				Solitude.PlayAnimate(UIStroke,SlowyTween , {
 					Transparency = 1
 				})
 
-				NeverLose.PlayAnimate(VersionContent,SlowyTween , {
+				Solitude.PlayAnimate(VersionContent,SlowyTween , {
 					TextTransparency = 1
 				})
 
-				NeverLose.PlayAnimate(VersionName,SlowyTween , {
+				Solitude.PlayAnimate(VersionName,SlowyTween , {
 					TextTransparency = 1
 				})
 			end;
@@ -678,19 +678,19 @@ function NeverLose.new(Config)
 
 		VersionProcess.Match = LPH_NO_VIRTUALIZE(function()
 			if Config.DefaultVersion == v.Idx then
-				NeverLose.PlayAnimate(VersionFrame,SlowyTween , {
-					BackgroundColor3 = NeverLose.AccentColor,
+				Solitude.PlayAnimate(VersionFrame,SlowyTween , {
+					BackgroundColor3 = Solitude.AccentColor,
 					BackgroundTransparency = 0.5
 				})
 			else
-				NeverLose.PlayAnimate(VersionFrame,SlowyTween , {
+				Solitude.PlayAnimate(VersionFrame,SlowyTween , {
 					BackgroundColor3 = Color3.fromRGB(20, 22, 27),
 					BackgroundTransparency = 0.050
 				})
 			end;
 		end);
 
-		NeverLose:AddSignal(NeverLose:CreateInput(VersionFrame,function()
+		Solitude:AddSignal(Solitude:CreateInput(VersionFrame,function()
 			Config.DefaultVersion = v.Idx;
 
 			for i,v in next , VersionItems do
@@ -702,12 +702,12 @@ function NeverLose.new(Config)
 		VersionProcess.SetRender(false);
 	end;
 
-	NeverLose:AddSignal(NeverLose:CreateInput(KeyFrame,function()
+	Solitude:AddSignal(Solitude:CreateInput(KeyFrame,function()
 		return Config.OnGetKey();
 	end))
 
 	local ratelimit = false;
-	NeverLose:AddSignal(NeverLose:CreateInput(RedeemFrame,function()
+	Solitude:AddSignal(Solitude:CreateInput(RedeemFrame,function()
 		if ratelimit then
 			return;
 		end;
@@ -737,38 +737,38 @@ function NeverLose.new(Config)
 		ratelimit = false;
 	end))
 
-	NeverLose:AddSignal(KeyFrame.MouseEnter:Connect(function()
-		NeverLose.PlayAnimate(KeyFrame,SlowyTween,{
+	Solitude:AddSignal(KeyFrame.MouseEnter:Connect(function()
+		Solitude.PlayAnimate(KeyFrame,SlowyTween,{
 			BackgroundColor3 = Color3.fromRGB(35, 38, 47)
 		})
 	end));
 
-	NeverLose:AddSignal(KeyFrame.MouseLeave:Connect(function()
-		NeverLose.PlayAnimate(KeyFrame,SlowyTween,{
+	Solitude:AddSignal(KeyFrame.MouseLeave:Connect(function()
+		Solitude.PlayAnimate(KeyFrame,SlowyTween,{
 			BackgroundColor3 = Color3.fromRGB(20, 22, 27)
 		})
 	end));
 
-	NeverLose:AddSignal(RedeemFrame.MouseEnter:Connect(function()
-		NeverLose.PlayAnimate(RedeemFrame,SlowyTween,{
+	Solitude:AddSignal(RedeemFrame.MouseEnter:Connect(function()
+		Solitude.PlayAnimate(RedeemFrame,SlowyTween,{
 			BackgroundColor3 = Color3.fromRGB(35, 38, 47)
 		})
 	end));
 
-	NeverLose:AddSignal(RedeemFrame.MouseLeave:Connect(function()
-		NeverLose.PlayAnimate(RedeemFrame,SlowyTween,{
+	Solitude:AddSignal(RedeemFrame.MouseLeave:Connect(function()
+		Solitude.PlayAnimate(RedeemFrame,SlowyTween,{
 			BackgroundColor3 = Color3.fromRGB(20, 22, 27)
 		})
 	end));
 
-	NeverLose:AddSignal(InputFrame.MouseEnter:Connect(function()
-		NeverLose.PlayAnimate(InputFrame,SlowyTween,{
+	Solitude:AddSignal(InputFrame.MouseEnter:Connect(function()
+		Solitude.PlayAnimate(InputFrame,SlowyTween,{
 			BackgroundColor3 = Color3.fromRGB(35, 38, 47)
 		})
 	end));
 
-	NeverLose:AddSignal(InputFrame.MouseLeave:Connect(function()
-		NeverLose.PlayAnimate(InputFrame,SlowyTween,{
+	Solitude:AddSignal(InputFrame.MouseLeave:Connect(function()
+		Solitude.PlayAnimate(InputFrame,SlowyTween,{
 			BackgroundColor3 = Color3.fromRGB(20, 22, 27)
 		})
 	end));
@@ -777,60 +777,60 @@ function NeverLose.new(Config)
 		if value then
 			LoaderFrame.Position = UDim2.new(0.5,0,0.5,0)
 
-			NeverLose.PlayAnimate(LoaderFrame,VSlowTween , {
+			Solitude.PlayAnimate(LoaderFrame,VSlowTween , {
 				BackgroundTransparency = 0.055,
 				Size = UDim2.new(0, 350, 0, UIListLayout.AbsoluteContentSize.Y + 160)
 			});
 
-			NeverLose.PlayAnimate(WindowName,SlowyTween , {
+			Solitude.PlayAnimate(WindowName,SlowyTween , {
 				TextTransparency = 0
 			})
 
-			NeverLose.PlayAnimate(WindowContent,SlowyTween , {
+			Solitude.PlayAnimate(WindowContent,SlowyTween , {
 				TextTransparency = 0.650
 			})
 
-			NeverLose.PlayAnimate(InputFrame,SlowyTween , {
+			Solitude.PlayAnimate(InputFrame,SlowyTween , {
 				BackgroundTransparency = 0.05
 			})
 
-			NeverLose.PlayAnimate(UIStroke,SlowyTween , {
+			Solitude.PlayAnimate(UIStroke,SlowyTween , {
 				Transparency = 0.650
 			})
 
-			NeverLose.PlayAnimate(TextBox,SlowyTween , {
+			Solitude.PlayAnimate(TextBox,SlowyTween , {
 				TextTransparency = 0.350
 			})
 
-			NeverLose.PlayAnimate(KeyFrame,SlowyTween , {
+			Solitude.PlayAnimate(KeyFrame,SlowyTween , {
 				BackgroundTransparency = 0.05
 			})
 
-			NeverLose.PlayAnimate(UIStroke_2,SlowyTween , {
+			Solitude.PlayAnimate(UIStroke_2,SlowyTween , {
 				Transparency = 0.650
 			})
 
-			NeverLose.PlayAnimate(Content,SlowyTween , {
+			Solitude.PlayAnimate(Content,SlowyTween , {
 				TextTransparency = 0.200
 			})
 
-			NeverLose.PlayAnimate(Icon,SlowyTween , {
+			Solitude.PlayAnimate(Icon,SlowyTween , {
 				TextTransparency = 0.250
 			})
 
-			NeverLose.PlayAnimate(RedeemFrame,SlowyTween , {
+			Solitude.PlayAnimate(RedeemFrame,SlowyTween , {
 				BackgroundTransparency = 0.05
 			})
 
-			NeverLose.PlayAnimate(UIStroke_3,SlowyTween , {
+			Solitude.PlayAnimate(UIStroke_3,SlowyTween , {
 				Transparency = 0.650
 			})
 
-			NeverLose.PlayAnimate(Content_2,SlowyTween , {
+			Solitude.PlayAnimate(Content_2,SlowyTween , {
 				TextTransparency = 0.200
 			})
 
-			NeverLose.PlayAnimate(Icon_2,SlowyTween , {
+			Solitude.PlayAnimate(Icon_2,SlowyTween , {
 				TextTransparency = 0.250
 			})
 
@@ -840,59 +840,59 @@ function NeverLose.new(Config)
 
 			Shadow:Render(true);
 		else
-			NeverLose.PlayAnimate(LoaderFrame,SlowyTween , {
+			Solitude.PlayAnimate(LoaderFrame,SlowyTween , {
 				BackgroundTransparency = 1
 			});
 
-			NeverLose.PlayAnimate(WindowName,SlowyTween , {
+			Solitude.PlayAnimate(WindowName,SlowyTween , {
 				TextTransparency = 1
 			})
 
-			NeverLose.PlayAnimate(WindowContent,SlowyTween , {
+			Solitude.PlayAnimate(WindowContent,SlowyTween , {
 				TextTransparency = 1
 			})
 
-			NeverLose.PlayAnimate(InputFrame,SlowyTween , {
+			Solitude.PlayAnimate(InputFrame,SlowyTween , {
 				BackgroundTransparency = 1
 			})
 
-			NeverLose.PlayAnimate(UIStroke,SlowyTween , {
+			Solitude.PlayAnimate(UIStroke,SlowyTween , {
 				Transparency = 1
 			})
 
-			NeverLose.PlayAnimate(TextBox,SlowyTween , {
+			Solitude.PlayAnimate(TextBox,SlowyTween , {
 				TextTransparency = 1
 			})
 
-			NeverLose.PlayAnimate(KeyFrame,SlowyTween , {
+			Solitude.PlayAnimate(KeyFrame,SlowyTween , {
 				BackgroundTransparency = 1
 			})
 
-			NeverLose.PlayAnimate(UIStroke_2,SlowyTween , {
+			Solitude.PlayAnimate(UIStroke_2,SlowyTween , {
 				Transparency = 1
 			})
 
-			NeverLose.PlayAnimate(Content,SlowyTween , {
+			Solitude.PlayAnimate(Content,SlowyTween , {
 				TextTransparency = 1
 			})
 
-			NeverLose.PlayAnimate(Icon,SlowyTween , {
+			Solitude.PlayAnimate(Icon,SlowyTween , {
 				TextTransparency = 1
 			})
 
-			NeverLose.PlayAnimate(RedeemFrame,SlowyTween , {
+			Solitude.PlayAnimate(RedeemFrame,SlowyTween , {
 				BackgroundTransparency = 1
 			})
 
-			NeverLose.PlayAnimate(UIStroke_3,SlowyTween , {
+			Solitude.PlayAnimate(UIStroke_3,SlowyTween , {
 				Transparency = 1
 			})
 
-			NeverLose.PlayAnimate(Content_2,SlowyTween , {
+			Solitude.PlayAnimate(Content_2,SlowyTween , {
 				TextTransparency = 1
 			});
 
-			NeverLose.PlayAnimate(Icon_2,SlowyTween , {
+			Solitude.PlayAnimate(Icon_2,SlowyTween , {
 				TextTransparency = 1
 			})
 
@@ -917,7 +917,7 @@ function NeverLose.new(Config)
 		LoaderLib:SetRender(false);
 		task.wait()
 		task.delay(0.45,function()
-			NeverLose:Unload()
+			Solitude:Unload()
 		end);
 		task.wait(0.3);
 	end;
@@ -925,14 +925,14 @@ function NeverLose.new(Config)
 	return LoaderLib;
 end;
 
-function NeverLose:Unload()
-	NeverLose.ScreenGui:Destroy();
+function Solitude:Unload()
+	Solitude.ScreenGui:Destroy();
 
-	for i,v in next , NeverLose.GlobalSignals do
+	for i,v in next , Solitude.GlobalSignals do
 		pcall(v.Disconnect,v)
 	end;
 
-	table.clear(NeverLose);
+	table.clear(Solitude);
 end;
 
-return NeverLose;
+return Solitude;

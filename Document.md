@@ -1,19 +1,19 @@
-# Neverlose UI Document
-This UI isn't official port to roblox from neverlose.cc.
+# Solitude UI Document
+Solitude UI Library for Roblox.
 The source code is ready for obfuscate using Luraph.
 
 ## Using Library
 ```lua
-local NeverLose = loadstring(game:HttpGet("https://raw.githubusercontent.com/4lpaca-pin/NeverLose/refs/heads/main/source.luau"))()
+local Solitude = loadstring(game:HttpGet("https://raw.githubusercontent.com/vsqzz/Solitudes/refs/heads/main/source.luau"))()
 ```
 For Roblox Game
 ```lua
-local NeverLose = require(script:WaitForChild('PATH_TO_MODULE'));
+local Solitude = require(script:WaitForChild('PATH_TO_MODULE'));
 ```
 
 ## Creating Notification
 ```lua
-local Notification = NeverLose:CreateNotification();
+local Notification = Solitude:CreateNotification();
 ```
 Usage:
 ```lua
@@ -26,7 +26,7 @@ Notification.new({
 
 ## Creating Logger
 ```lua
-local Logging = NeverLose:CreateLogger();
+local Logging = Solitude:CreateLogger();
 ```
 Usage:
 ```lua
@@ -34,7 +34,7 @@ Logging.new("crosshairs",'Hit {PLAYER_NAME} in the neck for 100 damage',15)
 ```
 ## Creating Indicator
 ```lua
-local Indicator = NeverLose:CreateIndicator();
+local Indicator = Solitude:CreateIndicator();
 ```
 Usage:
 ```lua
@@ -62,12 +62,12 @@ HitChance:SetText(<string>)
 
 ## Creating Window
 ```lua
-local Window = NeverLose:CreateWindow({
-		Logo = NeverLose.GlobalLogo,
-		Name = "Neverlose",
+local Window = Solitude:CreateWindow({
+		Logo = Solitude.GlobalLogo,
+		Name = "Solitude",
 		Content = "Counter-Strike 2",
-		Size = NeverLose.Scales.Default,
-		ConfigFolder = "NeverLoseConfigs",
+		Size = Solitude.Scales.Default,
+		ConfigFolder = "SolitudeConfigs",
 		Enable3DRenderer = false,
 		Keybind = "Insert"
 });

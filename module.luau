@@ -9,9 +9,9 @@ SyncManager.RenderValue = false;
 SyncManager.Thread = nil;
 SyncManager.Icon = "rbxassetid://120358385035996";
 
-function SyncManager:Init(NL_Lib)
-	SyncManager.Icon = NL_Lib.GlobalLogo;
-	SyncManager.NL = NL_Lib;
+function SyncManager:Init(Solitude_Lib)
+	SyncManager.Icon = Solitude_Lib.GlobalLogo;
+	SyncManager.Solitude = Solitude_Lib;
 end;
 
 function SyncManager:SetPlayers(list)

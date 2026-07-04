@@ -1,7 +1,7 @@
 <img width="805" height="545" alt="Screenshot 2026-01-21 234216" src="https://github.com/user-attachments/assets/fafedffd-5762-498e-87e3-2deec7718a7b" />
 
-# Neverlose
-Neverlose Recode UI for Roblox
+# Solitude
+Solitude UI Library for Roblox
 
 ## Icons?
 - Press Win + R
@@ -17,17 +17,17 @@ done
 ```lua
 -- U CAN USE TS IN UR ROBLOX GAME --
 
-local NeverLose = loadstring(game:HttpGet("https://raw.githubusercontent.com/4lpaca-pin/NeverLose/refs/heads/main/source.luau"))() --require(script:WaitForChild('ModuleScript'));
+local Solitude = loadstring(game:HttpGet("https://raw.githubusercontent.com/vsqzz/Solitudes/refs/heads/main/source.luau"))() --require(script:WaitForChild('ModuleScript'));
 
-local Notification = NeverLose:CreateNotification();
-local Logging = NeverLose:CreateLogger();
-local Indicator = NeverLose:CreateIndicator();
-local window = NeverLose:CreateWindow({
-	Logo = NeverLose.GlobalLogo,
-	Name = "Neverlose",
+local Notification = Solitude:CreateNotification();
+local Logging = Solitude:CreateLogger();
+local Indicator = Solitude:CreateIndicator();
+local window = Solitude:CreateWindow({
+	Logo = Solitude.GlobalLogo,
+	Name = "Solitude",
 	Content = "Counter-Strike 2",
-	Size = NeverLose.Scales.Default,
-	ConfigFolder = "NeverLoseConfigs",
+	Size = Solitude.Scales.Default,
+	ConfigFolder = "SolitudeConfigs",
 	Enable3DRenderer = false,
 	Keybind = "Insert"
 });
@@ -43,7 +43,7 @@ local HC = Indicator.new({
 window:AddTabLabel('AIMBOT')
 
 local ping = Watermark:AddBlock("chart-four-vertical-bars" , "0MS");
-local UITogg = Watermark:AddBlock("cube-vertexes" , "Neverlose");
+local UITogg = Watermark:AddBlock("cube-vertexes" , "Solitude");
 
 UITogg:Input(function()
 	window:ToggleInterface();
@@ -347,7 +347,7 @@ window.UserSettings:AddLabel('Menu Scale'):AddDropdown({
 	Default = "Default",
 	Values = {"Default",'Large','Mobile','Small'},
 	Callback = function(v)
-		window:SetSize(NeverLose.Scales[v]);
+		window:SetSize(Solitude.Scales[v]);
 		
 		Logging.new("crop",'Changed ui size to '..tostring(v),5)
 	end,
@@ -372,13 +372,13 @@ window.UserSettings:AddButton({
 
 Notification.new({
 	Title = "Notification",
-	Content = "This is Neverlose Notification",
+	Content = "This is Solitude Notification",
 	Duration = 5,
 })
 
 task.wait(1)
 Notification.new({
-	Title = "Neverlose",
+	Title = "Solitude",
 	Content = "Initialization in progress",
 	Duration = 7,
 })
@@ -410,4 +410,4 @@ while true do task.wait(3)
 end
 ```
 
-- 4lpacaLoL
+- vsqzz
