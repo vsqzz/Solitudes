@@ -7083,8 +7083,8 @@ function Solitude:CreateKeySystem(Config)
 			local Rank = Solitude:GetRank();
 			Status.Text = "Rank: "..Rank.Name;
 			Status.TextColor3 = Rank.Color;
-			Config.OnAuthenticated(Result, KeyLib);
 			KeyLib.YieldEvent:Fire(Result);
+			Config.OnAuthenticated(Result, KeyLib);
 		else
 			Status.Text = tostring(Result or "Invalid key");
 			Status.TextColor3 = Color3.fromRGB(255, 102, 105);
