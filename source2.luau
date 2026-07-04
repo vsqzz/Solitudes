@@ -213,18 +213,6 @@ if getcustomasset then
 		makefolder(dir);
 	end;
 
-	pcall(function()
-		if not isfile(dir..'/'..'logo.png') then
-			local byte = game:HttpGet(string.format(link,'logo.png'));
-
-			writefile(dir..'/'..'logo.png' , byte);
-			task.wait();
-		end;
-
-		if isfile(dir..'/'..'logo.png') then
-			Solitude.GlobalLogo = getcustomasset(dir..'/'..'logo.png')
-		end;
-	end);
 
 	pcall(function()
 		if not isfile(dir..'/'..'saturation_value_gradient.png') then

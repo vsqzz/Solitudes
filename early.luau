@@ -202,7 +202,7 @@ Solitude.MainColor = Color3.fromRGB(8, 8, 13);
 Solitude.RegisiteryColor = {};
 Solitude.NameRegisitry = {};
 Solitude.IsMosueOverOtherFrame = false;
-Solitude.GlobalLogo = "rbxassetid://120358385035996";
+Solitude.GlobalLogo = "rbxassetid://97994273021300";
 Solitude.ImageColorMapping = "rbxassetid://4155801252";
 
 if getcustomasset then
@@ -213,18 +213,6 @@ if getcustomasset then
 		makefolder(dir);
 	end;
 
-	pcall(function()
-		if not isfile(dir..'/'..'logo.png') then
-			local byte = game:HttpGet(string.format(link,'logo.png'));
-
-			writefile(dir..'/'..'logo.png' , byte);
-			task.wait();
-		end;
-
-		if isfile(dir..'/'..'logo.png') then
-			Solitude.GlobalLogo = getcustomasset(dir..'/'..'logo.png')
-		end;
-	end);
 
 	pcall(function()
 		if not isfile(dir..'/'..'saturation_value_gradient.png') then

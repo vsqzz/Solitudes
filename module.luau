@@ -7,7 +7,7 @@ local CoreGui = cloneref(game:GetService('CoreGui'));
 SyncManager.Players = {};
 SyncManager.RenderValue = false;
 SyncManager.Thread = nil;
-SyncManager.Icon = "rbxassetid://120358385035996";
+SyncManager.Icon = "rbxassetid://97994273021300";
 
 function SyncManager:Init(Solitude_Lib)
 	SyncManager.Icon = Solitude_Lib.GlobalLogo;
