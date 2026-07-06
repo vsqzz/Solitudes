@@ -2,6 +2,101 @@
 
 Solitude is a Roblox UI library for script menus, configuration panels, notifications, indicators, ranks, and key-based access flows.
 
+## Script Loader
+
+Use the script loader when you want a small entry screen before loading a specific product. This is different from `source2.luau`: `source2.luau` is the UI library source, while `loader.luau` is the loader interface.
+
+```lua
+local Loader = loadstring(game:HttpGet("https://raw.githubusercontent.com/vsqzz/Solitudes/refs/heads/main/loader.luau"))()
+```
+
+Basic loader flow:
+
+```lua
+local Loader = loadstring(game:HttpGet("https://raw.githubusercontent.com/vsqzz/Solitudes/refs/heads/main/loader.luau"))()
+
+local AUTH_ENDPOINT = "https://assetgg.app/api/solitude/auth"
+local KEY_PORTAL_URL = "https://assetgg.app"
+
+local ScriptUrls = {
+    ["universal-esp"] = "SCRIPT_URL_HERE",
+    ["neo-tennis"] = "SCRIPT_URL_HERE",
+    ["roville-autofarm"] = "SCRIPT_URL_HERE"
+}
+
+
+local Menu = Loader.new({
+    Name = "Solitude",
+    Content = "Script Loader",
+    Process = "Select a script and enter your key.",
+    Default = "",
+    DefaultVersion = "universal-esp",
+    Versions = {
+        {
+            Idx = "universal-esp",
+            Name = "Universal ESP",
+            Content = "Free ESP script"
+        },
+        {
+            Idx = "neo-tennis",
+            Name = "Neo Tennis",
+            Content = "Freemium and Buyer tennis script"
+        },
+        {
+            Idx = "roville-autofarm",
+            Name = "Roville Autofarm",
+            Content = "Freemium and Buyer farm script"
+        }
+    },
+    OnGetKey = function()
+        if setclipboard then
+            setclipboard(KEY_PORTAL_URL)
+        end
+    end,
+    OnRedeem = function(key)
+        local HttpService = game:GetService("HttpService")
+        local httpRequest = request or http_request or syn and syn.request
+
+        if not httpRequest then
+            return false, "Executor does not support HTTP requests"
+        end
+
+        local requestBody = HttpService:JSONEncode({
+            key = key
+        })
+
+        local response = httpRequest({
+            Url = AUTH_ENDPOINT,
+            Method = "POST",
+            Headers = {
+                ["Content-Type"] = "application/json"
+            },
+            Body = requestBody
+        })
+
+        local decoded = HttpService:JSONDecode(response.Body)
+        if decoded and decoded.success and decoded.valid then
+            getgenv().SolitudeKey = key
+            getgenv().SolitudeRank = decoded.rank
+            getgenv().SolitudeFeatures = decoded.features or {}
+            return true
+        end
+
+        return false, decoded and decoded.error or "Invalid key"
+    end
+})
+
+local selected = Menu:Await()
+local scriptUrl = ScriptUrls[selected]
+
+if scriptUrl then
+    Menu:Unload()
+    loadstring(game:HttpGet(scriptUrl))()
+end
+```
+
+`SCRIPT_URL_HERE` should point to the raw script file for that product. The loader handles the first screen and returns the selected `Idx`. The loaded script can still use `source2.luau` for the main UI and can re-check the same key against its own `ScriptId` if needed.
+
 ## Installation
 
 Use the hosted source in executor scripts:
